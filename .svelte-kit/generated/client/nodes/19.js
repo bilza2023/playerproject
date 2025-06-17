@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/syllabus/fbise10physics/+page.svelte";

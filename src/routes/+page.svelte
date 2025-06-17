@@ -1,42 +1,122 @@
-
 <script>
+  import { PivotPlayer } from "taleem-pivot-player";
+  import { DeckBuilder } from "deckbuilderpivot";
 
-  import Nav from "../lib/appComps/Nav.svelte";  
-  import Footer from "../lib/appComps/Footer.svelte";  
-  import SidebarCard from "../lib/appComps/homepage/SidebarCard.svelte";  
-  import TcodeCard from "../lib/appComps/homepage/TcodeCard.svelte";
+  let deck = null;
 
-  import {fbise10physics} from "./syllabus/fbise10physics/fbise9physicsSyllabus"; 
-  import {testSyllabus} from "./syllabus/testSyllabus/testSyllabus"; 
- console.log("fbise10physics" ,fbise10physics);
+  let deckBuilderInput = `// Example:
+deckbuilder.setTheme("royalBlue");
 
+deckbuilder.s.titleSlide([
+  { name: "title", content: "Electric Vehicles 101" }
+]);`;
+
+  let jsonInput = "";
+
+  function loadFromBuilder() {
+    try {
+      const deckbuilder = new DeckBuilder();
+      const func = new Function("deckbuilder", `
+        ${deckBuilderInput}
+        return deckbuilder.build();
+      `);
+      deck = func(deckbuilder);
+      jsonInput = JSON.stringify(deck, null, 2);
+    } catch (e) {
+      alert("DeckBuilder error:\\n" + e.message);
+    }
+  }
+
+  function loadFromJson() {
+    try {
+      deck = JSON.parse(jsonInput);
+    } catch (e) {
+      alert("JSON error:\\n" + e.message);
+    }
+  }
 </script>
-<div class="min-h-screen flex flex-col justify-start bg-[#160c00]">
 
-  <Nav />
-<!-- <TaleemBanner /> -->
-  
-<section class="w-full px-12 py-12 grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-12 min-h-screen">
+<style>
+  /* Don’t touch player */
+  .player-zone {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
 
-  <!-- Left Column -->
-  <div class={` p-6 rounded-xl shadow-inner flex flex-col space-y-6 border-2 border-[#93754b]  `}>
-    
-    <TcodeCard
-    tcodes={[
-      fbise10physics,
-      testSyllabus
-    ]}
-  />
+  /* Editor section */
+  .section {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #1e1e1e;
+    border-top: 4px solid #444;
+  }
+
+  textarea {
+    width: 100%;
+    height: 220px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    background: #0d1117;
+    color: #c9f5d1;
+    padding: 1rem;
+    border: 1px solid #333;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .button-row {
+    margin-bottom: 3rem;
+  }
+
+  button {
+    background-color: #0057b8;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #003f8a;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+    font-size: 1.25rem;
+    font-style: italic;
+  }
+</style>
+
+<!-- === PivotPlayer always top, full screen === -->
+<div class="player-zone">
+  {#if deck}
+    <PivotPlayer {deck} />
+  {:else}
+    <div class="empty-state">No deck loaded. Paste code below and click Load.</div>
+  {/if}
+</div>
+
+<!-- === Editor Section Below === -->
+<div class="section">
+  <h2>DeckBuilder Format</h2>
+  <textarea bind:value={deckBuilderInput}></textarea>
+  <div class="button-row">
+    <button on:click={loadFromBuilder}>Load Builder</button>
   </div>
 
-  <!-- Right Sidebar -->
-  <div class={` p-4 rounded-xl shadow flex flex-col space-y-4 min-h-screen border-2  border-[#93754b] text-white`}>
-    <h4 class="text-lg font-bold  mb-2 text-white">📢 Updates & Insights</h4>
-    <SidebarCard />
-    <SidebarCard />
+  <h2>JSON Format</h2>
+  <textarea bind:value={jsonInput}></textarea>
+  <div class="button-row">
+    <button on:click={loadFromJson}>Load JSON</button>
   </div>
-
-</section>
-
-<Footer />  
 </div>
