@@ -1,69 +1,113 @@
 <script>
-    let file;
-    let status = "";
-  
-    async function uploadFile() {
-      if (!file) return;
-      status = "Uploading...";
-  
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      const res = await fetch('/upload', {
-        method: 'POST',
-        body: formData
-      });
-  
-      const result = await res.json();
-      status = `✅ Uploaded to: ${result.url}`;
+  let file = null;
+  let name = '';
+  let tcode = '';
+  let usage = '';
+  let tags = '';
+  let description = '';
+  let linkedQuestion = '';
+  let uploadUrl = '';
+  let status = '';
+
+  async function handleUpload() {
+    if (!file) {
+      status = '❌ Please select a file.';
+      return;
     }
-  </script>
-  
-  <div class="upload-container">
-    <h1>📦 Upload Image</h1>
-  
-    <input type="file" on:change="{e => file = e.target.files[0]}" />
-    <button on:click="{uploadFile}">Upload</button>
-  
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('tcode', tcode);
+    formData.append('usage', usage);
+    formData.append('tags', tags);
+    formData.append('description', description);
+    formData.append('linkedQuestion', linkedQuestion);
+
+    const response = await fetch('/', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+    if (result.url) {
+      uploadUrl = result.url;
+      status = `✅ Uploaded to ${result.url}`;
+    } else {
+      status = `❌ ${result.error}`;
+    }
+  }
+</script>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-900">
+  <div class="w-full max-w-lg p-8 bg-gray-800 rounded-lg shadow-lg text-white space-y-6">
+    <h2 class="text-3xl font-bold text-center">Upload Teaching Image</h2>
+    <p class="text-sm text-gray-400 text-center">
+      Please upload an educational image (diagram, background, illustration). Provide metadata to help organize and reuse across lessons.
+    </p>
+
+    <div class="flex justify-center">
+      <input
+        type="file"
+        on:change="{e => file = e.target.files[0]}"
+        class="text-white file:bg-gray-700 file:border file:border-gray-600 file:rounded file:px-4 file:py-2 file:text-sm file:font-semibold"
+      />
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      <input
+        type="text"
+        placeholder="Name (e.g. Scope Diagram)"
+        bind:value="{name}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+      <input
+        type="text"
+        placeholder="Tcode (e.g. fbise9physics)"
+        bind:value="{tcode}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+      <input
+        type="text"
+        placeholder="Usage (e.g. diagram, background)"
+        bind:value="{usage}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+      <input
+        type="text"
+        placeholder="Tags (comma-separated)"
+        bind:value="{tags}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+      <input
+        type="text"
+        placeholder="Description (optional)"
+        bind:value="{description}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+      <input
+        type="text"
+        placeholder="Linked Question (optional)"
+        bind:value="{linkedQuestion}"
+        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-400"
+      />
+    </div>
+
+    <button
+      on:click="{handleUpload}"
+      class="w-full bg-blue-600 hover:bg-blue-500 rounded p-3 font-semibold"
+    >
+      Upload
+    </button>
+
     {#if status}
-      <p class="status">{status}</p>
+      <p class="text-center text-sm">{status}</p>
+    {/if}
+
+    {#if uploadUrl}
+      <div class="flex justify-center">
+        <img src="{uploadUrl}" alt="Uploaded Image" class="max-w-full rounded border border-gray-600" />
+      </div>
     {/if}
   </div>
-  
-  <style>
-    .upload-container {
-      max-width: 500px;
-      margin: 100px auto;
-      text-align: center;
-      font-family: sans-serif;
-      background: #f8f9fa;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-    }
-  
-    input[type="file"] {
-      margin: 1rem 0;
-    }
-  
-    button {
-      padding: 0.6rem 1.2rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 0.4rem;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-  
-    button:hover {
-      background-color: #0056b3;
-    }
-  
-    .status {
-      margin-top: 1.5rem;
-      font-weight: bold;
-      color: #28a745;
-    }
-  </style>
-  
+</div>
