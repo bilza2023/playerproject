@@ -1,7 +1,7 @@
 
 <script>
   import { PivotPlayer } from "taleem-pivot-player";
-  import { DeckBuilder } from 'deckbuilderpivot';
+  import { DeckBuilder } from 'taleem-pivot-deckbuilder';
 
   let deck = null;
 

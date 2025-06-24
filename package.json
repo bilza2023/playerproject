@@ -20,7 +20,6 @@
   "type": "module",
   "dependencies": {
     "@zerodevx/svelte-toast": "^0.9.5",
-    "deckbuilderpivot": "^0.1.0",
     "howler": "^2.2.4",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
@@ -28,7 +27,8 @@
     "mathjs": "^12.3.0",
     "svelte-katex": "0.1.2",
     "tailwindcss": "^3.3.3",
-    "taleem-pivot-player": "^0.1.0"
+    "taleem-pivot-player": "^0.9.1",
+    "taleem-pivot-deckbuilder": "^0.9.0"
   },
   "description": "",
   "main": "canvas-data-format.js",
