@@ -29,7 +29,7 @@
     "svelte-katex": "^0.1.2",
     "katex": "^0.16.22",
     "taleem-pivot-deckbuilder": "^0.9.1",
-    "taleem-pivot-player": "^0.9.3"
+    "taleem-pivot-player": "^0.9.4"
   },
   "description": "",
   "author": "",
